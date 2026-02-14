@@ -1,0 +1,66 @@
+{
+  "name": "renote-server",
+  "version": "1.0.5",
+  "description": "WebSocket server for Renote - mobile remote development client with Claude Code integration",
+  "main": "dist/index.js",
+  "bin": {
+    "renote-server": "dist/index.js"
+  },
+  "files": [
+    "dist/**/*",
+    "web-dist/**/*"
+  ],
+  "scripts": {
+    "dev": "nodemon --exec ts-node src/index.ts",
+    "build": "tsc",
+    "build:all": "cd ../web && npm run build && cd ../server && rm -rf web-dist && cp -r ../web/dist web-dist && tsc",
+    "start": "node dist/index.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "prepublishOnly": "npm run build",
+    "postinstall": "cd node_modules/node-pty && npx node-gyp rebuild 2>/dev/null || true"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "chokidar": "^5.0.0",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "node-pty": "^1.1.0",
+    "ssh2": "^1.17.0",
+    "ws": "^8.19.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^25.2.0",
+    "@types/ssh2": "^1.15.5",
+    "@types/ws": "^8.18.1",
+    "jest": "^30.2.0",
+    "nodemon": "^3.1.11",
+    "ts-jest": "^29.4.6",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/__tests__/**/*.test.ts"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.ts",
+      "!src/**/*.d.ts",
+      "!src/__tests__/**"
+    ],
+    "transformIgnorePatterns": [
+      "node_modules/(?!(chokidar)/)"
+    ],
+    "moduleNameMapper": {
+      "^chokidar$": "<rootDir>/node_modules/chokidar/index.js"
+    }
+  }
+}

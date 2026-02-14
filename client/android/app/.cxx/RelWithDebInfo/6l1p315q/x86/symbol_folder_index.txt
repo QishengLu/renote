@@ -1,0 +1,1 @@
+/home/nn/workspace/renote/client/android/app/build/intermediates/cxx/RelWithDebInfo/6l1p315q/obj/x86

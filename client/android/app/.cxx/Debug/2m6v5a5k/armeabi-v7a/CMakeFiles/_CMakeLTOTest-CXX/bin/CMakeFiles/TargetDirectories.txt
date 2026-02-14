@@ -1,0 +1,4 @@
+/home/nn/workspace/renote/client/android/app/.cxx/Debug/2m6v5a5k/armeabi-v7a/CMakeFiles/_CMakeLTOTest-CXX/bin/CMakeFiles/foo.dir
+/home/nn/workspace/renote/client/android/app/.cxx/Debug/2m6v5a5k/armeabi-v7a/CMakeFiles/_CMakeLTOTest-CXX/bin/CMakeFiles/boo.dir
+/home/nn/workspace/renote/client/android/app/.cxx/Debug/2m6v5a5k/armeabi-v7a/CMakeFiles/_CMakeLTOTest-CXX/bin/CMakeFiles/edit_cache.dir
+/home/nn/workspace/renote/client/android/app/.cxx/Debug/2m6v5a5k/armeabi-v7a/CMakeFiles/_CMakeLTOTest-CXX/bin/CMakeFiles/rebuild_cache.dir

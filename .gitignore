@@ -1,0 +1,27 @@
+# General
+.DS_Store
+.worktrees/
+node_modules/
+*.log
+.env
+.idea/
+.vscode/
+
+# Build outputs
+dist/
+dist-server/
+build/
+server/web-dist/
+web/dist/
+
+# Android
+client/android/build/
+client/android/app/build/
+client/android/.gradle/
+client/android/local.properties
+
+# iOS
+client/ios/Pods/
+client/ios/build/
+client/ios/*.xcworkspace/xcuserdata
+client/ios/.xcode.env.local
