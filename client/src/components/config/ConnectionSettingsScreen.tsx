@@ -26,6 +26,14 @@ export default function ConnectionSettingsScreen({ navigation }: Props) {
   const [wsPort, setWsPort] = useState('9080');
   const [token, setToken] = useState('');
   const [useTls, setUseTls] = useState(false);
+
+  // Auto-enable TLS when port is 443
+  const handlePortChange = (value: string) => {
+    setWsPort(value);
+    if (value === '443') {
+      setUseTls(true);
+    }
+  };
   const [isConnecting, setIsConnecting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -153,7 +161,7 @@ export default function ConnectionSettingsScreen({ navigation }: Props) {
             style={styles.input}
             placeholder="9080"
             value={wsPort}
-            onChangeText={setWsPort}
+            onChangeText={handlePortChange}
             keyboardType="numeric"
             editable={!isConnected}
             placeholderTextColor={colors.text.disabled}

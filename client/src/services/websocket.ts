@@ -35,8 +35,12 @@ export class WebSocketClient {
 
     this.isManualDisconnect = false;
     this.clearReconnectTimeout();
-    const protocol = useTls ? 'wss' : 'ws';
-    const url = `${protocol}://${host}:${port}`;
+    // Auto-detect TLS for port 443
+    const effectiveTls = useTls || port === 443;
+    const protocol = effectiveTls ? 'wss' : 'ws';
+    // Omit default port (443 for wss, 80 for ws)
+    const isDefaultPort = (effectiveTls && port === 443) || (!effectiveTls && port === 80);
+    const url = isDefaultPort ? `${protocol}://${host}` : `${protocol}://${host}:${port}`;
 
     console.log(`[WS] Connecting to ${url}...`);
     console.log(`[WS] Token: ${token ? '***' : '(empty)'}`);
