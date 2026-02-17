@@ -146,6 +146,7 @@ export default function TerminalView({ sessionId }: TerminalViewProps) {
 
     // Build WS URL
     const { host, port, token } = connectionParams;
+    const protocol = connectionParams.useTls ? 'wss' : 'ws';
     const params = new URLSearchParams({
       token,
       sessionId,
@@ -153,7 +154,7 @@ export default function TerminalView({ sessionId }: TerminalViewProps) {
       cols: String(term.cols || 80),
       rows: String(term.rows || 24),
     });
-    const wsUrl = `ws://${host}:${port}/terminal?${params}`;
+    const wsUrl = `${protocol}://${host}:${port}/terminal?${params}`;
 
     const ws = new WebSocket(wsUrl);
     ws.binaryType = 'arraybuffer';

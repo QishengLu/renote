@@ -8,6 +8,7 @@ export default function WelcomeScreen() {
   const [host, setHost] = useState(connectionParams?.host || window.location.hostname || 'localhost');
   const [port, setPort] = useState(String(connectionParams?.port || '9080'));
   const [token, setToken] = useState(connectionParams?.token || '');
+  const [useTls, setUseTls] = useState(connectionParams?.useTls ?? false);
 
   const isConnecting = status.ws === 'connecting';
 
@@ -15,8 +16,8 @@ export default function WelcomeScreen() {
     const portNum = parseInt(port, 10);
     if (!host || isNaN(portNum)) return;
 
-    useConnectionStore.getState().setConnectionParams({ host, port: portNum, token });
-    wsClient.connect(host, portNum, token);
+    useConnectionStore.getState().setConnectionParams({ host, port: portNum, token, useTls });
+    wsClient.connect(host, portNum, token, useTls);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -82,6 +83,27 @@ export default function WelcomeScreen() {
               className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2.5 text-sm text-gray-100 focus:outline-none focus:border-blue-500 disabled:opacity-50 transition-colors"
               placeholder="Auth token (optional)"
             />
+          </div>
+
+          <div className="flex items-center justify-between py-1">
+            <div>
+              <label className="block text-sm text-gray-400">TLS (WSS)</label>
+              <span className="text-xs text-gray-600">{useTls ? 'wss' : 'ws'}://{host}:{port}</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setUseTls(!useTls)}
+              disabled={isConnecting}
+              className={`relative w-10 h-5 rounded-full transition-colors ${
+                useTls ? 'bg-blue-600' : 'bg-gray-700'
+              } disabled:opacity-50`}
+            >
+              <span
+                className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform ${
+                  useTls ? 'translate-x-5' : ''
+                }`}
+              />
+            </button>
           </div>
 
           <button

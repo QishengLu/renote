@@ -31,7 +31,7 @@ export default function ConnectionPromptModal({ visible, onClose, serverConfig }
     setError(null);
 
     try {
-      wsClient.connect(serverConfig.host, serverConfig.wsPort, serverConfig.wsToken);
+      wsClient.connect(serverConfig.host, serverConfig.wsPort, serverConfig.wsToken, serverConfig.useTls);
       await wsClient.waitForConnection(10000);
 
       await offlineCache.setLastServer(serverConfig.id);
@@ -40,6 +40,7 @@ export default function ConnectionPromptModal({ visible, onClose, serverConfig }
         host: serverConfig.host,
         port: serverConfig.wsPort,
         token: serverConfig.wsToken,
+        useTls: serverConfig.useTls,
       });
 
       setServer(serverConfig);

@@ -14,6 +14,7 @@ export interface ServerConfig {
   sshPassword?: string; // Optional SSH password for persistence
   wsPort: number;
   wsToken: string;
+  useTls?: boolean; // Use wss:// instead of ws://
   portForwards?: PortForwardPreset[]; // Port forward presets
 }
 

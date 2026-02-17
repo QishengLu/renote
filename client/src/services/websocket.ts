@@ -9,6 +9,7 @@ export interface ConnectionParams {
   host: string;
   port: number;
   token: string;
+  useTls?: boolean;
 }
 
 export type ConnectionState = 'disconnected' | 'connecting' | 'connected';
@@ -28,13 +29,14 @@ export class WebSocketClient {
   // 标记当前会话是否成功连接过（用于判断是否允许自动重连）
   private hasConnectedThisSession = false;
 
-  connect(host: string, port: number, token: string) {
+  connect(host: string, port: number, token: string, useTls?: boolean) {
     // 存储连接参数
-    this.connectionParams = { host, port, token };
+    this.connectionParams = { host, port, token, useTls };
 
     this.isManualDisconnect = false;
     this.clearReconnectTimeout();
-    const url = `ws://${host}:${port}`;
+    const protocol = useTls ? 'wss' : 'ws';
+    const url = `${protocol}://${host}:${port}`;
 
     console.log(`[WS] Connecting to ${url}...`);
     console.log(`[WS] Token: ${token ? '***' : '(empty)'}`);
@@ -69,8 +71,8 @@ export class WebSocketClient {
     };
 
     this.ws.onerror = (error) => {
-      console.error('[WS] WebSocket error:', error);
-      console.error('[WS] Error details:', JSON.stringify(error));
+      const msg = (error as any).message || 'Unknown WebSocket error';
+      console.error('[WS] WebSocket error:', msg);
     };
 
     this.ws.onclose = (event) => {
@@ -333,8 +335,8 @@ export class WebSocketClient {
 
     this.reconnectTimeout = setTimeout(() => {
       this.reconnectAttempts++;
-      const { host, port, token } = this.connectionParams!;
-      this.connect(host, port, token);
+      const { host, port, token, useTls } = this.connectionParams!;
+      this.connect(host, port, token, useTls);
     }, delay);
   }
 
@@ -349,8 +351,8 @@ export class WebSocketClient {
 
     console.log('Manual reconnect triggered');
     this.resetReconnectAttempts();
-    const { host, port, token } = this.connectionParams!;
-    this.connect(host, port, token);
+    const { host, port, token, useTls } = this.connectionParams!;
+    this.connect(host, port, token, useTls);
     return true;
   }
 

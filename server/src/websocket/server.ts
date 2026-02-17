@@ -1,5 +1,7 @@
 import WebSocket from 'ws';
-import { createServer, IncomingMessage } from 'http';
+import { createServer as createHttpServer, IncomingMessage } from 'http';
+import { createServer as createHttpsServer } from 'https';
+import { readFileSync } from 'fs';
 import { CONFIG } from '../config';
 import { logger } from '../utils/logger';
 import { AuthManager } from './auth';
@@ -21,7 +23,13 @@ export class WebSocketServer {
   private gitHandler: GitHandler;
 
   constructor() {
-    const server = createServer();
+    const useTls = !!(CONFIG.tlsCert && CONFIG.tlsKey);
+    const server = useTls
+      ? createHttpsServer({
+          cert: readFileSync(CONFIG.tlsCert),
+          key: readFileSync(CONFIG.tlsKey),
+        })
+      : createHttpServer();
 
     // Use noServer mode for path-based routing
     this.wss = new WebSocket.Server({ noServer: true });
@@ -56,9 +64,10 @@ export class WebSocketServer {
     this.setupWebSocket();
 
     server.listen(CONFIG.port, CONFIG.host, () => {
-      logger.info(`WebSocket server running on ${CONFIG.host}:${CONFIG.port}`);
-      logger.info(`  - Main API: ws://${CONFIG.host}:${CONFIG.port}/`);
-      logger.info(`  - Terminal direct: ws://${CONFIG.host}:${CONFIG.port}/terminal`);
+      const proto = useTls ? 'wss' : 'ws';
+      logger.info(`WebSocket server running on ${CONFIG.host}:${CONFIG.port} (${useTls ? 'TLS' : 'plain'})`);
+      logger.info(`  - Main API: ${proto}://${CONFIG.host}:${CONFIG.port}/`);
+      logger.info(`  - Terminal direct: ${proto}://${CONFIG.host}:${CONFIG.port}/terminal`);
     });
   }
 

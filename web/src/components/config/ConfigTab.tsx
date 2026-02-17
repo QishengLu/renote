@@ -12,7 +12,7 @@ export default function ConfigTab() {
   // Auto-connect on mount if we have saved params
   useEffect(() => {
     if (connectionParams && status.ws === 'disconnected') {
-      wsClient.connect(connectionParams.host, connectionParams.port, connectionParams.token);
+      wsClient.connect(connectionParams.host, connectionParams.port, connectionParams.token, connectionParams.useTls);
     }
     // Only run once on mount
     // eslint-disable-next-line react-hooks/exhaustive-deps

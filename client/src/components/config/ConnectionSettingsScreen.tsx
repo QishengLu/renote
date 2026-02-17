@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
+  Switch,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useConnectionStore } from '../../store/connectionStore';
@@ -24,6 +25,7 @@ export default function ConnectionSettingsScreen({ navigation }: Props) {
   const [host, setHost] = useState('10.10.10.146');
   const [wsPort, setWsPort] = useState('9080');
   const [token, setToken] = useState('');
+  const [useTls, setUseTls] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -41,6 +43,7 @@ export default function ConnectionSettingsScreen({ navigation }: Props) {
         setHost(lastServer.host);
         setWsPort(lastServer.wsPort.toString());
         setToken(lastServer.wsToken);
+        setUseTls(lastServer.useTls ?? false);
       }
     } catch (error) {
       // Ignore
@@ -59,6 +62,7 @@ export default function ConnectionSettingsScreen({ navigation }: Props) {
       sshUsername: '',
       wsPort: parseInt(wsPort),
       wsToken: token,
+      useTls,
     };
   };
 
@@ -84,7 +88,7 @@ export default function ConnectionSettingsScreen({ navigation }: Props) {
 
     try {
       console.log('[Connect] Calling wsClient.connect...');
-      wsClient.connect(host, parseInt(wsPort), token);
+      wsClient.connect(host, parseInt(wsPort), token, useTls);
 
       console.log('[Connect] Waiting for connection...');
       await wsClient.waitForConnection(10000);
@@ -99,6 +103,7 @@ export default function ConnectionSettingsScreen({ navigation }: Props) {
         host,
         port: parseInt(wsPort),
         token,
+        useTls,
       });
 
       console.log('[Connect] Setting server in store...');
@@ -167,6 +172,22 @@ export default function ConnectionSettingsScreen({ navigation }: Props) {
             placeholderTextColor={colors.text.disabled}
           />
         </View>
+
+        <View style={styles.switchGroup}>
+          <View style={styles.switchLabelContainer}>
+            <Text style={styles.label}>加密连接 (WSS/TLS)</Text>
+            <Text style={styles.switchHint}>
+              {useTls ? 'wss://' : 'ws://'}{host}:{wsPort}
+            </Text>
+          </View>
+          <Switch
+            value={useTls}
+            onValueChange={setUseTls}
+            disabled={isConnected}
+            trackColor={{ false: colors.border.secondary, true: colors.primary }}
+            thumbColor={colors.text.inverse}
+          />
+        </View>
       </View>
 
       <View style={styles.buttonContainer}>
@@ -230,6 +251,21 @@ const styles = StyleSheet.create({
   },
   inputGroup: {
     marginBottom: spacing.md,
+  },
+  switchGroup: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: spacing.md,
+  },
+  switchLabelContainer: {
+    flex: 1,
+    marginRight: spacing.md,
+  },
+  switchHint: {
+    fontSize: typography.size.caption,
+    color: colors.text.tertiary,
+    marginTop: 2,
   },
   label: {
     fontSize: typography.size.footnote,

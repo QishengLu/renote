@@ -1,6 +1,7 @@
 import express from 'express';
 import path from 'path';
 import fs from 'fs';
+import https from 'https';
 import { CONFIG } from '../config';
 import { logger } from '../utils/logger';
 
@@ -95,9 +96,21 @@ export function createHttpServer() {
   }
 
   const httpPort = CONFIG.port + 1;
-  app.listen(httpPort, CONFIG.host, () => {
-    logger.info(`HTTP server running on ${CONFIG.host}:${httpPort}`);
-  });
+  const useTls = !!(CONFIG.tlsCert && CONFIG.tlsKey);
+
+  if (useTls) {
+    const httpsServer = https.createServer({
+      cert: fs.readFileSync(CONFIG.tlsCert),
+      key: fs.readFileSync(CONFIG.tlsKey),
+    }, app);
+    httpsServer.listen(httpPort, CONFIG.host, () => {
+      logger.info(`HTTPS server running on ${CONFIG.host}:${httpPort}`);
+    });
+  } else {
+    app.listen(httpPort, CONFIG.host, () => {
+      logger.info(`HTTP server running on ${CONFIG.host}:${httpPort}`);
+    });
+  }
 
   return app;
 }

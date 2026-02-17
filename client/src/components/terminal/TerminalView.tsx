@@ -349,6 +349,7 @@ export default function TerminalView({ sessionId, onBack }: TerminalViewProps) {
       return null;
     }
     const { host, port, token } = connectionParams;
+    const protocol = connectionParams.useTls ? 'wss' : 'ws';
     const params = new URLSearchParams({ token, sessionId, type: terminalType });
     if (claudeArgs && claudeArgs.length > 0) {
       params.set('claudeArgs', encodeURIComponent(JSON.stringify(claudeArgs)));
@@ -356,7 +357,7 @@ export default function TerminalView({ sessionId, onBack }: TerminalViewProps) {
     if (cwd) {
       params.set('cwd', cwd);
     }
-    const url = `ws://${host}:${port}/terminal?${params.toString()}`;
+    const url = `${protocol}://${host}:${port}/terminal?${params.toString()}`;
     console.log('[TerminalView] Built wsUrl:', url.replace(token, '***'));
     return url;
   }, [connectionParams, sessionId, terminalType, claudeArgs, cwd]);

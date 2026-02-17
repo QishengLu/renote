@@ -34,6 +34,9 @@ export const CONFIG = {
   maxFileSize: parseInt(process.env.MAX_FILE_SIZE || '10485760'),
   searchTimeout: parseInt(process.env.SEARCH_TIMEOUT || '5000'),
   logLevel: args['log-level'] || process.env.LOG_LEVEL || 'info',
+  // TLS configuration for wss:// support
+  tlsCert: args['tls-cert'] || process.env.TLS_CERT || '',
+  tlsKey: args['tls-key'] || process.env.TLS_KEY || '',
   // File tree limits to prevent OOM on large directories
   fileTreeMaxDepth: parseInt(process.env.FILE_TREE_MAX_DEPTH || '3'),
   fileTreeMaxNodes: parseInt(process.env.FILE_TREE_MAX_NODES || '5000'),

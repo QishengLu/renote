@@ -21,11 +21,12 @@ export class WebSocketClient {
   private connectionParams: ConnectionParams | null = null;
   private hasConnectedThisSession = false;
 
-  connect(host: string, port: number, token: string) {
-    this.connectionParams = { host, port, token };
+  connect(host: string, port: number, token: string, useTls?: boolean) {
+    this.connectionParams = { host, port, token, useTls };
     this.isManualDisconnect = false;
     this.clearReconnectTimeout();
-    const url = `ws://${host}:${port}`;
+    const protocol = useTls ? 'wss' : 'ws';
+    const url = `${protocol}://${host}:${port}`;
 
     useConnectionStore.getState().setWSStatus('connecting');
 
@@ -299,16 +300,16 @@ export class WebSocketClient {
 
     this.reconnectTimeout = setTimeout(() => {
       this.reconnectAttempts++;
-      const { host, port, token } = this.connectionParams!;
-      this.connect(host, port, token);
+      const { host, port, token, useTls } = this.connectionParams!;
+      this.connect(host, port, token, useTls);
     }, delay);
   }
 
   reconnect(): boolean {
     if (!this.canReconnect()) return false;
     this.reconnectAttempts = 0;
-    const { host, port, token } = this.connectionParams!;
-    this.connect(host, port, token);
+    const { host, port, token, useTls } = this.connectionParams!;
+    this.connect(host, port, token, useTls);
     return true;
   }
 

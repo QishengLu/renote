@@ -4,6 +4,7 @@ export interface ConnectionParams {
   host: string;
   port: number;
   token: string;
+  useTls?: boolean;
 }
 
 export type ConnectionState = 'disconnected' | 'connecting' | 'connected';

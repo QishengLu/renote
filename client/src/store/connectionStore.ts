@@ -9,6 +9,7 @@ export interface ConnectionParams {
   host: string;
   port: number;
   token: string;
+  useTls?: boolean;
 }
 
 interface ConnectionState {

@@ -84,7 +84,8 @@ export default function DiagnosticsScreen() {
     }
 
     setIsTesting(true);
-    const wsUrl = `ws://${testHost}:${testPort}`;
+    const protocol = connectionParams?.useTls ? 'wss' : 'ws';
+    const wsUrl = `${protocol}://${testHost}:${testPort}`;
     addLog('info', `测试 WebSocket 连接: ${wsUrl}`);
 
     try {
@@ -156,8 +157,9 @@ export default function DiagnosticsScreen() {
 
     setIsTesting(true);
     const token = connectionParams?.token || '';
-    const wsUrl = `ws://${testHost}:${testPort}/terminal?token=${encodeURIComponent(token)}&sessionId=test-${Date.now()}&type=shell`;
-    addLog('info', `测试终端 WebSocket: ws://${testHost}:${testPort}/terminal?...`);
+    const protocol = connectionParams?.useTls ? 'wss' : 'ws';
+    const wsUrl = `${protocol}://${testHost}:${testPort}/terminal?token=${encodeURIComponent(token)}&sessionId=test-${Date.now()}&type=shell`;
+    addLog('info', `测试终端 WebSocket: ${protocol}://${testHost}:${testPort}/terminal?...`);
 
     try {
       const ws = new WebSocket(wsUrl);
